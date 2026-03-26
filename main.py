@@ -9,11 +9,10 @@ from typing import List
 MODEL = "gemini-3-flash-preview"
 API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
 SYSTEM_PROMPT = "You are a minimal educational agent."
-PATH = ".env"
 
 
 def load_api_key() -> str:
-    with open(PATH, "r", encoding="utf-8") as env_file:
+    with open(".env", "r", encoding="utf-8") as env_file:
         for raw_line in env_file:
             key, value = raw_line.strip().split("=", 1)
             key = key.strip()
@@ -79,7 +78,7 @@ def agent_step(api_key: str, history: List[str]) -> str:
 
 def run() -> None:
     api_key = load_api_key()
-    history: List[str] = [f"system: {SYSTEM_PROMPT}"]
+    history: List[str] = [SYSTEM_PROMPT]
 
     print(f"Minimal agent running with {MODEL}. Type 'exit' to quit.")
 
@@ -93,11 +92,6 @@ def run() -> None:
             return
 
         history.append(f"user: {user_input}")
-
-        # This is the simplest possible loop:
-        # 1. Add the latest observation (user input) to state.
-        # 2. Ask the model for the next step.
-        # 3. Save the result back into state.
         assistant_output = agent_step(api_key, history)
         history.append(f"assistant: {assistant_output}")
 
