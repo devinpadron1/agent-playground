@@ -18,8 +18,6 @@ if not api_key:
 # Build history
 history: List[str] = [SYSTEM_PROMPT]
 
-print(f"Minimal agent running with {MODEL}. Type 'exit' to quit.")
-
 # Agentic loop
 while True:
     user_input = input("\nYou: ").strip()
