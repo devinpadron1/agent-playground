@@ -10,7 +10,7 @@ MODEL = "gemini-3-flash-preview"
 API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
 SYSTEM_PROMPT = "You are a minimal educational agent."
 
-# Get an API
+# Get an API key
 api_key = os.getenv("GEMINI_API_KEY")
 if not api_key:
     raise RuntimeError("Missing GEMINI_API_KEY. Add it to .env.")
