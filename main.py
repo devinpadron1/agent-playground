@@ -40,7 +40,6 @@ while True:
 
     parts = candidates[0].get("content", {}).get("parts", [])
     text = "".join(part.get("text", "") for part in parts).strip()
-
     history.append(f"assistant: {text}")
 
     print(f"\nAgent: {text}")
