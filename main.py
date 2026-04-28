@@ -1,46 +1,19 @@
 import json
 import os
-from typing import List
-from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
-MODEL = "gemini-2.5-flash"
-API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
-SYSTEM_PROMPT = "You are a minimal educational agent."
+url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+history = ["You are a minimal educational agent."]
 
-# Get an API key
-api_key = os.getenv("GEMINI_API_KEY")
-# Build chat history
-history: List[str] = [SYSTEM_PROMPT]
-
-# Agentic loop
 while True:
-    user_input = input("\nYou: ").strip()
-    history.append(f"user: {user_input}")
-
-    prompt = "\n".join(history)
-    body = {"contents": [{"parts": [{"text": prompt}]}]}
-    request = Request(
-        API_URL,
-        data=json.dumps(body).encode("utf-8"),
-        headers={ "Content-Type": "application/json", "x-goog-api-key": api_key },
-        method="POST",
+    history.append("user: " + input("\nYou: "))
+    body = {"contents": [{"parts": [{"text": "\n".join(history)}]}]}
+    req = Request(
+        url,
+        json.dumps(body).encode(),
+        {"Content-Type": "application/json", "x-goog-api-key": os.environ["GEMINI_API_KEY"]},
     )
-
-    try:
-        with urlopen(request) as response:
-            payload = json.loads(response.read().decode("utf-8"))
-    except HTTPError as exc:
-        error_body = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"Gemini API HTTP {exc.code}: {error_body}") from exc
-
-    candidates = payload.get("candidates", [])
-    if not candidates:
-        raise RuntimeError(f"No candidates in Gemini response: {payload}")
-
-    parts = candidates[0].get("content", {}).get("parts", [])
-    text = "".join(part.get("text", "") for part in parts).strip()
-    history.append(f"assistant: {text}")
-
-    print(f"\nAgent: {text}")
-
+    res = json.loads(urlopen(req).read())
+    text = res["candidates"][0]["content"]["parts"][0]["text"]
+    history.append("assistant: " + text)
+    print("\nAgent:", text)
