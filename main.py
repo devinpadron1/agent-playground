@@ -1,27 +1,21 @@
 import json
 import os
+from typing import List
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
-from typing import List
 
-MODEL = "gemini-3-flash-preview"
+MODEL = "gemini-2.5-flash"
 API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
 SYSTEM_PROMPT = "You are a minimal educational agent."
 
 # Get an API key
 api_key = os.getenv("GEMINI_API_KEY")
-if not api_key:
-    raise RuntimeError("Missing GEMINI_API_KEY. Add it to .env.")
-
-# Build history
+# Build chat history
 history: List[str] = [SYSTEM_PROMPT]
 
 # Agentic loop
 while True:
     user_input = input("\nYou: ").strip()
-    if not user_input:
-        continue
-
     history.append(f"user: {user_input}")
 
     prompt = "\n".join(history)
