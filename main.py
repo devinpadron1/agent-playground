@@ -23,10 +23,7 @@ while True:
     request = Request(
         API_URL,
         data=json.dumps(body).encode("utf-8"),
-        headers={
-            "Content-Type": "application/json",
-            "x-goog-api-key": api_key,
-        },
+        headers={ "Content-Type": "application/json", "x-goog-api-key": api_key },
         method="POST",
     )
 
